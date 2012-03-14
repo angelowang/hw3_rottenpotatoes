@@ -4,8 +4,22 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
+    
+    Movie.delete_all
+    Movie.create(:title => 'Aladdin', :rating => 'G', :release_date => '25-Nov-1992')
+    Movie.create(:title => 'The Terminator', :rating => 'R', :release_date => '26-Oct-1984')
+    Movie.create(:title => 'When Harry Met Sally', :rating => 'R', :release_date => '21-Jul-1989')
+    Movie.create(:title => 'The Help', :rating => 'PG-13', :release_date => '10-Aug-2011')
+    Movie.create(:title => 'Chocolat', :rating => 'PG-13', :release_date => '5-Jan-2001')
+    Movie.create(:title => 'Amelie', :rating => 'R', :release_date => '25-Apr-2001')
+    Movie.create(:title => '2001: A Space Odyssey', :rating => 'G', :release_date => '6-Apr-1968')
+    Movie.create(:title => 'The Incredibles', :rating => 'PG', :release_date => '5-Nov-2004')
+    Movie.create(:title => 'Raiders of the Lost Ark', :rating => 'PG', :release_date => '12-Jun-1981')
+    Movie.create(:title => 'Chicken Run', :rating => 'G', :release_date => '21-Jun-2000')
   end
-  assert false, "Unimplmemented"
+  #puts Movie.all.to_s
+  assert Movie.all.length == 10, "Number of movies isn't 10 but #{Movie.all.length}"
+  #assert false, "Unimplmemented"
 end
 
 # Make sure that one string (regexp) occurs before or after another one

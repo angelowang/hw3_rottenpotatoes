@@ -21,6 +21,8 @@ module NavigationHelpers
     #
     #   when /^(.*)'s profile page$/i
     #     user_profile_path(User.find_by_login($1))
+    when /^the RottenPotatoes home page$/
+      movies_path
 
     else
       begin
