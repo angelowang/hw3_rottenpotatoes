@@ -4,22 +4,11 @@ Given /the following movies exist/ do |movies_table|
   movies_table.hashes.each do |movie|
     # each returned element will be a hash whose key is the table header.
     # you should arrange to add that movie to the database here.
-    
-    Movie.delete_all
-    Movie.create(:title => 'Aladdin', :rating => 'G', :release_date => '25-Nov-1992')
-    Movie.create(:title => 'The Terminator', :rating => 'R', :release_date => '26-Oct-1984')
-    Movie.create(:title => 'When Harry Met Sally', :rating => 'R', :release_date => '21-Jul-1989')
-    Movie.create(:title => 'The Help', :rating => 'PG-13', :release_date => '10-Aug-2011')
-    Movie.create(:title => 'Chocolat', :rating => 'PG-13', :release_date => '5-Jan-2001')
-    Movie.create(:title => 'Amelie', :rating => 'R', :release_date => '25-Apr-2001')
-    Movie.create(:title => '2001: A Space Odyssey', :rating => 'G', :release_date => '6-Apr-1968')
-    Movie.create(:title => 'The Incredibles', :rating => 'PG', :release_date => '5-Nov-2004')
-    Movie.create(:title => 'Raiders of the Lost Ark', :rating => 'PG', :release_date => '12-Jun-1981')
-    Movie.create(:title => 'Chicken Run', :rating => 'G', :release_date => '21-Jun-2000')
+    m = Movie.find_by_title(movie['title'])
+    if m.nil?()
+        Movie.create(movie)
+    end
   end
-  #puts Movie.all.to_s
-  assert Movie.all.length == 10, "Number of movies isn't 10 but #{Movie.all.length}"
-  #assert false, "Unimplmemented"
 end
 
 # Make sure that one string (regexp) occurs before or after another one
@@ -39,4 +28,34 @@ When /I (un)?check the following ratings: (.*)/ do |uncheck, rating_list|
   # HINT: use String#split to split up the rating_list, then
   #   iterate over the ratings and reuse the "When I check..." or
   #   "When I uncheck..." steps in lines 89-95 of web_steps.rb
+  ratings = rating_list.split(/,\s?/)
+  ratings.each do |rating|
+    if uncheck
+      step %Q(I uncheck "ratings_#{rating}")
+    else
+      step %Q(I check "ratings_#{rating}")
+    end
+  end
+end
+
+Then /I should (not )?see the following movies: (.*)/ do |notsee, movie_list|
+  movies = movie_list.split(/,\s?/)
+  vis = notsee ? 'not ' : ''
+  movies.each do |movie|
+    step %Q(I should #{vis}see "#{movie}")
+  end
+end
+
+Then /I should see (\d+) movies/ do |num|
+  rows = page.all('#movies tbody tr').size.to_s
+  rows.should == num
+end
+
+Then /I should see no movies/ do
+  step %Q(I should see 0 movies)
+end
+
+Then /I should see all of the movies/ do
+  count = Movie.all.length
+  step %Q(I should see #{count} movies)
 end
